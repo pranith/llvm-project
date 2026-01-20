@@ -25,7 +25,7 @@ using namespace llvm;
 static void registerCallbacks(PassBuilder &PB) {
   PB.registerOptimizerLastEPCallback(
       [](ModulePassManager &MPM, OptimizationLevel, ThinOrFullLTOPhase) {
-        MPM.addPass(createFunctionToFunctionPassAdaptor(MemoryBarrierPass()));
+        MPM.addPass(createModuleToFunctionPassAdaptor(MemoryBarrierPass()));
       });
 
   PB.registerPipelineParsingCallback(
