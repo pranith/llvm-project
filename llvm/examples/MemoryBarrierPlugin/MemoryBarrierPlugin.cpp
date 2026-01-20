@@ -16,15 +16,16 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Passes/PassBuilder.h"
-#include "llvm/Passes/PassPlugin.h"
+#include "llvm/Plugins/PassPlugin.h"
+#include "llvm/IR/PassManager.h"
 #include "llvm/Transforms/Utils/MemoryBarrier.h"
 
 using namespace llvm;
 
 static void registerCallbacks(PassBuilder &PB) {
   PB.registerOptimizerLastEPCallback(
-      [](FunctionPassManager &PM, OptimizationLevel) {
-        PM.addPass(MemoryBarrierPass());
+      [](ModulePassManager &MPM, OptimizationLevel, ThinOrFullLTOPhase) {
+        MPM.addPass(createFunctionToFunctionPassAdaptor(MemoryBarrierPass()));
       });
 
   PB.registerPipelineParsingCallback(
